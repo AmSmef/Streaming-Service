@@ -1,0 +1,28 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      nodejs: 18
+    commands:
+      - echo Installing dependencies...
+      - npm install  # Install dependencies and create node_modules folder
+
+  build:
+    commands:
+      - echo Packaging Lambda function...
+      - mkdir -p build
+      # Remove any previous files in build directory and copy only the necessary ones
+      - rm -rf build/*
+      # Copy index.js from src/ to the root directory
+      - cp src/index.js .  # Copy the index.js to the root directory
+      # Include node_modules in the zip package along with other files
+      - zip -r build/StreamService.zip index.js package.json package-lock.json node_modules/*  # Include node_modules contents
+      # Optionally, you can also include other files if needed
+      - echo Deploying to Lambda...
+      # Deploy the Lambda function using the AWS CLI
+      - aws lambda update-function-code --function-name StreamingLambda --zip-file fileb://build/StreamService.zip
+
+artifacts:
+  files:
+    - build/StreamService.zip
