@@ -35,6 +35,10 @@ phases:
       # Deploy the Lambda function using the AWS CLI
       - aws lambda update-function-code --function-name SearchLambda --zip-file fileb://build/SearchService.zip
 
+      - echo syncing frontend files to to S3...
+
+      - aws s3 sync ./streaming/ s3://devops-bucket-amsmef/frontend/streaming/
+
 artifacts:
   files:
     - build/StreamingService.zip
